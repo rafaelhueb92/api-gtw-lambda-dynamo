@@ -1,0 +1,65 @@
+openapi: 3.0.3
+info:
+  title: Dashboard API
+  description: API for managing dashboards and retrieving data.
+  version: 1.0.0
+servers:
+  - url: https://{api_gateway_url}
+    description: Production server
+    variables:
+      api_gateway_url:
+        default: "localhost:3000"
+
+paths:
+  /dashboard:
+    post:
+      summary: Create a new dashboard item
+      description: Add a new item to the DynamoDB table.
+      operationId: createDashboard
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - type
+                - nameDashboard
+                - values
+              properties:
+                type:
+                  type: string
+                  description: The type of the dashboard.
+                nameDashboard:
+                  type: string
+                  description: The name of the dashboard.
+                values:
+                  type: string
+                  description: Additional values for the dashboard.
+      responses:
+        '201':
+          description: Item created successfully.
+        '400':
+          description: Invalid request body.
+    get:
+      summary: Retrieve dashboard items
+      description: Get all dashboard items filtered by type.
+      operationId: getDashboards
+      parameters:
+        - name: type
+          in: query
+          required: true
+          description: The type prefix to filter dashboard items.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successfully retrieved items.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+        '400':
+          description: Invalid query parameters.
